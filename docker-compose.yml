@@ -1,0 +1,13 @@
+version: '2'
+services:
+  api:
+    image: rizzalbayu/rizefund:latest
+
+    #working_dir: /src
+    command: sh -c "npm run start:prod"
+    expose:
+      - 3000
+    environment:
+      TELEGRAM_TOKEN: ${TELEGRAM_TOKEN}
+      USER_SHEETS: ${USER_SHEET}
+      GOOGLE_APPLICATION_CREDENTIALS: ${GOOGLE_CREDENTIAL}
