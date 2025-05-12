@@ -1,4 +1,4 @@
-FROM node:23.11.0-bullseye
+FROM node:23.11.0-alpine3.20
 
 WORKDIR /app
 RUN npm install -g @nestjs/cli
@@ -8,4 +8,4 @@ RUN npm install
 COPY . .
 
 RUN npm run build
-EXPOSE 3000
+EXPOSE 3001
