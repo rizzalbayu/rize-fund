@@ -41,7 +41,7 @@ export class TelegramService implements OnModuleInit {
         reply_markup: {
           keyboard: [
             ['/pengeluaran', '/rekap'],
-            ['/rekap-category'],
+            ['/rekap-kategori'],
             ['/batal'],
           ],
           one_time_keyboard: true,

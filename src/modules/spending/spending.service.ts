@@ -41,6 +41,16 @@ export class SpendingService {
           userState,
         );
         break;
+
+      case BOT_COMMAND.RECAP_CATEGORY:
+        await this.recapCategoryProcess(
+          chatId,
+          message,
+          ctx,
+          userStates,
+          userState,
+        );
+        break;
     }
   }
 
@@ -65,7 +75,7 @@ export class SpendingService {
         break;
 
       case BOT_COMMAND.RECAP_CATEGORY:
-        await this.recapCategory(chatId, ctx);
+        await this.recapCategory(chatId, ctx, userStates);
         break;
 
       case BOT_COMMAND.CANCEL_ACTION:
@@ -77,7 +87,7 @@ export class SpendingService {
           reply_markup: {
             keyboard: [
               ['/pengeluaran', '/rekap'],
-              ['/rekap-category'],
+              ['/rekap-kategori'],
               ['/batal'],
             ],
             one_time_keyboard: true,
@@ -107,13 +117,53 @@ export class SpendingService {
     );
   }
 
-  async recapCategory(chatId: number, ctx: Context) {
-    const rows = await this.sheetService.getAllRows(chatId);
+  async recapCategory(
+    chatId: number,
+    ctx: Context,
+    userStates: Map<number, userStateModel>,
+  ) {
+    const userState = userStates?.get(chatId);
+    if (!userState?.step) return;
+    userStates.set(chatId, {
+      ...userState,
+      step: USER_STATUS.AWAITING_STARTDATE,
+      command: BOT_COMMAND.RECAP_CATEGORY,
+    });
+    return ctx.reply(BOT_REPLY.INPUT_STARTDATE);
+  }
+
+  async recapCategoryProcess(
+    chatId: number,
+    message: string | undefined,
+    ctx: Context,
+    userStates: Map<number, userStateModel>,
+    currentUserState: userStateModel,
+  ) {
+    if (currentUserState.step !== USER_STATUS.AWAITING_STARTDATE) return;
+    if (!message) return;
+    const startDate = message.trim();
+    //regex format dd/mm/yyyy
+    const isValid = /^\d{2}\/\d{2}\/\d{4}$/.test(startDate);
+
+    if (!isValid) {
+      return ctx.reply(BOT_REPLY.WRONG_DATEFORMAT);
+    }
+
+    const rows = await this.sheetService.getRowsByStartDateAndCategories(
+      chatId,
+      startDate,
+    );
     if (!rows || rows.length === 0) {
       return ctx.reply(BOT_REPLY.NO_RECORD);
     }
+    const formatted = rows
+      .map((r) => `📂 ${r.category}: Rp ${r.total.toLocaleString()}`)
+      .join('\n');
 
-    const result = 'test';
+    userStates.delete(chatId);
+    ctx.reply(
+      `💰 Rekap Pengeluaran:\nMulai: ${startDate} s.d. hari ini\n\n${formatted}`,
+    );
   }
 
   async spendingMoney(

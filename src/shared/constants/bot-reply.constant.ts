@@ -6,7 +6,9 @@ export const BOT_REPLY = {
   NOMINAL_NUMBER: '⚠️ Nominal harus berupa angka. Masukkan ulang: ',
   INPUT_NOMINAL: 'Masukan Nominal: ',
   INPUT_SPENDING: 'Ketik Nama Pengeluaran : ',
+  INPUT_STARTDATE: 'Ketik Tanggal Mulai : ',
   PICK_CATEGORY: 'Pilih Kategori: ',
   PICK_MENU: 'Silakan pilih menu: ',
+  WRONG_DATEFORMAT: 'Format tanggal salah. Gunakan format: dd/mm/yyyy',
   USER_CHATID: (id: number) => `🆔 Chat ID kamu adalah: \`${id}\``,
 };

@@ -68,4 +68,52 @@ export class SheetsService {
 
     return res.data.values || [];
   }
+
+  async getRowsByStartDateAndCategories(chatId: number, startDate: string) {
+    const spreadsheetId = this.getSheetByChatId(chatId);
+    const range = 'Sheet1!A:D';
+    const res = await this.sheetsClient.spreadsheets.values.get({
+      spreadsheetId,
+      range,
+    });
+
+    const rows = (res.data.values as string[][]) || [];
+    const parsedStart = parseDate(startDate);
+    if (!parsedStart) return [];
+    const now = new Date();
+    if (parsedStart > now) return [];
+    const result: Record<string, number> = {};
+
+    for (const row of rows) {
+      const [spendName, nominal, timestamp, category]: string[] = row;
+      const data: userSpendModel = {
+        spendName,
+        nominal,
+        timestamp,
+        category,
+      };
+      const nominalNumber = parseInt(data.nominal as string);
+      //check if data row not valid
+      if (!data.category || isNaN(nominalNumber) || !data.timestamp) continue;
+
+      if (!result[data.category]) result[data.category] = 0;
+      result[data.category] += nominalNumber;
+      const rowDate = parseDate(data.timestamp);
+
+      if (rowDate && rowDate >= parsedStart && rowDate <= now) {
+        if (!result[data.category]) result[data.category] = 0;
+        result[data.category] += nominalNumber;
+      }
+    }
+
+    return Object.entries(result).map(([category, total]) => ({
+      category,
+      total,
+    }));
+  }
+}
+function parseDate(str: string): Date | null {
+  const [dd, mm, yyyy] = str.split('/');
+  const d = new Date(`${yyyy}-${mm}-${dd}T00:00:00+07:00`);
+  return isNaN(d.getTime()) ? null : d;
 }
