@@ -7,5 +7,6 @@ export const BOT_REPLY = {
   INPUT_NOMINAL: 'Masukan Nominal: ',
   INPUT_SPENDING: 'Ketik Nama Pengeluaran : ',
   PICK_CATEGORY: 'Pilih Kategori: ',
+  PICK_MENU: 'Silakan pilih menu: ',
   USER_CHATID: (id: number) => `🆔 Chat ID kamu adalah: \`${id}\``,
 };

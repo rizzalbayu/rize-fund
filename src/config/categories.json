@@ -1,0 +1,38 @@
+[
+  {
+    "name": "Belanja",
+    "subcategories": ["Pakaian", "Elektronik", "Keperluan Rumah"]
+  },
+  {
+    "name": "Makanan & Minuman",
+    "subcategories": ["Makan Siang", "Kopi", "Jajan"]
+  },
+  {
+    "name": "Tagihan",
+    "subcategories": ["Listrik", "Air", "Internet"]
+  },
+  {
+    "name": "Kegiatan",
+    "subcategories": ["Olahraga", "Acara", "Hobi"]
+  },
+  {
+    "name": "Simpanan",
+    "subcategories": ["Tabungan", "Investasi"]
+  },
+  {
+    "name": "Kesehatan",
+    "subcategories": ["Obat", "Dokter", "Vitamin"]
+  },
+  {
+    "name": "Hiburan",
+    "subcategories": ["Bioskop", "Game", "Streaming"]
+  },
+  {
+    "name": "Transportasi",
+    "subcategories": ["Ojek", "Taksi", "Bensin"]
+  },
+  {
+    "name": "Lainnya",
+    "subcategories": []
+  }
+]

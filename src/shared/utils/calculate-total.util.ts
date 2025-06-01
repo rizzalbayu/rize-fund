@@ -61,3 +61,15 @@ function isSameDay(d1: Date, d2: Date) {
     d1.getDate() === d2.getDate()
   );
 }
+
+function calculateCategory(rows: string[][]) {
+  const now = new Date();
+
+  const getPastDate = (daysAgo: number) => {
+    const d = new Date(now);
+    d.setDate(d.getDate() - daysAgo);
+    return d;
+  };
+
+  console.log('test');
+}

@@ -5,6 +5,7 @@ import { SpendingService } from '../../../modules/spending/spending.service';
 import { USER_STATUS } from '../../constants/user-status.constant';
 import { userStateModel } from '../../../modules/spending/spending.model';
 import { BOT_REPLY } from '../../constants/bot-reply.constant';
+import { BOT_COMMAND } from '../../constants/bot-command.constant';
 
 @Injectable()
 export class TelegramService implements OnModuleInit {
@@ -21,16 +22,36 @@ export class TelegramService implements OnModuleInit {
     this.botTele = new Telegraf(tokenTele);
   }
 
-  onModuleInit() {
+  async onModuleInit() {
     this.registerCommands();
     this.registerHandlers();
-    this.botTele.launch();
+    const commands = [
+      { command: 'start', description: 'Mulai bot' },
+      { command: 'chatid', description: 'Lihat chat ID' },
+      { command: 'batal', description: 'Batalkan proses' },
+    ];
+
+    await this.botTele.telegram.setMyCommands(commands);
+    await this.botTele.launch();
   }
 
   private registerCommands() {
     this.botTele.start(async (ctx) => {
-      await ctx.reply(BOT_REPLY.INPUT_SPENDING);
-      this.userStates.set(ctx.chat.id, { step: USER_STATUS.AWAITING_NAME });
+      await ctx.reply(BOT_REPLY.PICK_MENU, {
+        reply_markup: {
+          keyboard: [
+            ['/pengeluaran', '/rekap'],
+            ['/rekap-category'],
+            ['/batal'],
+          ],
+          one_time_keyboard: true,
+          resize_keyboard: true,
+        },
+      });
+      this.userStates.set(ctx.chat.id, {
+        step: USER_STATUS.IDLE,
+        command: BOT_COMMAND.BOT_START,
+      });
     });
   }
   private registerHandlers() {
